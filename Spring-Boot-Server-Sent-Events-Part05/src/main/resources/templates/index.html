@@ -1,10 +1,157 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+	<meta charset="UTF-8">
+	<title>Spring Boot Tutorials</title>
+	<script src="https://cdn.jsdelivr.net/npm/htmx.org@4.0.0/dist/htmx.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/htmx.org@4.0.0/dist/ext/hx-sse.min.js"></script>
+	<script type="text/javascript">
+		let color_red = 0;
+		let color_green = 0;
+		let color_blue = 0;
+		let mixer_red = 0;
+		let mixer_green = 0;
+		let mixer_blue = 0;
+		let mixer = 0;
+	</script>
+	<style>
+		body {
+			margin:25px;
+		}
+		.valve_visible {
+			display:inline-block; 
+			visibility: visible; 
+			position: absolute; 
+		}
+		.valve_hidden {
+			display:none; 
+			visibility: hidden; 
+			position: absolute; 
+		}
+	</style>
 </head>
 <body>
-
+	<div 
+		hx-sse:connect="/color"
+		hx-on:red="color_red = event.detail.data;
+			htmx.find('#red').innerHTML = color_red;
+			htmx.find('#color_block_red_color').style.top=300 - color_red + 'px';
+			htmx.find('#color_block_red_color').style.height=color_red + 'px';"
+		hx-on:green="color_green = event.detail.data;
+			htmx.find('#green').innerHTML = color_green;
+			htmx.find('#color_block_green_color').style.top=300 - color_green + 'px';
+			htmx.find('#color_block_green_color').style.height=color_green + 'px';"
+		hx-on:blue="color_blue = event.detail.data;
+			htmx.find('#blue').innerHTML = color_blue;
+			htmx.find('#color_block_blue_color').style.top=300 - color_blue + 'px';
+			htmx.find('#color_block_blue_color').style.height=color_blue + 'px';"
+		hx-on:valve_red="if (event.detail.data == 'open') {
+				htmx.find('#button_red_valve').innerHTML='OPEN';
+				htmx.find('#button_red_valve').style.backgroundColor='green';
+				htmx.find('#color_block_red_valve_close_1').className='valve_hidden';
+				htmx.find('#color_block_red_valve_close_2').className='valve_hidden';
+				htmx.find('#color_block_red_valve_open_1').className='valve_visible';
+				htmx.find('#color_block_red_valve_open_2').className='valve_visible';
+				htmx.find('#color_block_red_valve_open_3').className='valve_visible';
+			} else {
+				htmx.find('#button_red_valve').innerHTML='CLOSE';
+				htmx.find('#button_red_valve').style.backgroundColor='red';
+				htmx.find('#color_block_red_valve_close_1').className='valve_visible';
+				htmx.find('#color_block_red_valve_close_2').className='valve_visible';
+				htmx.find('#color_block_red_valve_open_1').className='valve_hidden';
+				htmx.find('#color_block_red_valve_open_2').className='valve_hidden';
+				htmx.find('#color_block_red_valve_open_3').className='valve_hidden';
+			};"
+		hx-on:valve_green="if (event.detail.data == 'open') {
+				htmx.find('#button_green_valve').innerHTML='OPEN';
+				htmx.find('#button_green_valve').style.backgroundColor='green';
+				htmx.find('#color_block_green_valve_close_1').className='valve_hidden';
+				htmx.find('#color_block_green_valve_close_2').className='valve_hidden';
+				htmx.find('#color_block_green_valve_open_1').className='valve_visible';
+				htmx.find('#color_block_green_valve_open_2').className='valve_visible';
+				htmx.find('#color_block_green_valve_open_3').className='valve_visible';
+			} else {
+				htmx.find('#button_green_valve').innerHTML='CLOSE';
+				htmx.find('#button_green_valve').style.backgroundColor='red';
+				htmx.find('#color_block_green_valve_close_1').className='valve_visible';
+				htmx.find('#color_block_green_valve_close_2').className='valve_visible';
+				htmx.find('#color_block_green_valve_open_1').className='valve_hidden';
+				htmx.find('#color_block_green_valve_open_2').className='valve_hidden';
+				htmx.find('#color_block_green_valve_open_3').className='valve_hidden';
+			}"
+		hx-on:valve_blue="if (event.detail.data == 'open') {
+				htmx.find('#button_blue_valve').innerHTML='OPEN';
+				htmx.find('#button_blue_valve').style.backgroundColor='green';
+				htmx.find('#color_block_blue_valve_close_1').className='valve_hidden';
+				htmx.find('#color_block_blue_valve_close_2').className='valve_hidden';
+				htmx.find('#color_block_blue_valve_open_1').className='valve_visible';
+				htmx.find('#color_block_blue_valve_open_2').className='valve_visible';
+				htmx.find('#color_block_blue_valve_open_3').className='valve_visible';
+			} else {
+				htmx.find('#button_blue_valve').innerHTML='CLOSE';
+				htmx.find('#button_blue_valve').style.backgroundColor='red';
+				htmx.find('#color_block_blue_valve_close_1').className='valve_visible';
+				htmx.find('#color_block_blue_valve_close_2').className='valve_visible';
+				htmx.find('#color_block_blue_valve_open_1').className='valve_hidden';
+				htmx.find('#color_block_blue_valve_open_2').className='valve_hidden';
+				htmx.find('#color_block_blue_valve_open_3').className='valve_hidden';
+			}"
+		hx-on:mixer_red="mixer_red = event.detail.data;
+			htmx.find('#mixer').innerHTML=mixer_red + ' ' + mixer_green + ' '+ mixer_blue;
+			htmx.find('#color_block_mixer_color').style.backgroundColor='rgb(' + mixer_red + ',' + mixer_green + ','+ mixer_blue +')';"
+		hx-on:mixer_green="mixer_green = event.detail.data;
+			htmx.find('#mixer').innerHTML=mixer_red + ' ' + mixer_green + ' '+ mixer_blue;
+			htmx.find('#color_block_mixer_color').style.backgroundColor='rgb(' + mixer_red + ',' + mixer_green + ','+ mixer_blue +')';"
+		hx-on:mixer_blue="mixer_blue = event.detail.data;
+			htmx.find('#mixer').innerHTML=mixer_red + ' ' + mixer_green + ' '+ mixer_blue;
+			htmx.find('#color_block_mixer_color').style.backgroundColor='rgb(' + mixer_red + ',' + mixer_green + ','+ mixer_blue +')';"
+		hx-on:mixer="mixer = event.detail.data;
+			htmx.find('#mixer_height').innerHTML=mixer;
+			htmx.find('#color_block_mixer_color').style.top=300 - mixer + 'px';
+			htmx.find('#color_block_mixer_color').style.height=mixer + 'px';"
+			>
+	</div>
+	<h1>Spring Boot Tutorial</h1>
+	<p>RED: <span id="red">0</span></p>
+	<p>GREEN: <span id="green">0</span></p>
+	<p>BLUE: <span id="blue">0</span></p>
+	<p>MIXER COLOR: <span id="mixer">0 0 0</span></p>
+	<p>MIXER : <span id="mixer_height">0</span></p>
+	<div id="color_block_red" style="display:inline-block; position: fixed; top: 200px; left: 600px; width:100px; height:300px; border:2px solid black; background-color:rgb(0 0 0)">
+		<div id="color_block_red_color" style="display:inline-block; position: absolute; top: 300px; left: 0px; width:100px; height:0px; background-color:rgb(255 0 0)"></div>
+	</div>
+	<div id="color_block_red_valve" style="display:inline-block; position: fixed; top: 510px; left: 635px; width:30px; height:30px; border:2px solid black; background-color:rgb(255 255 255)">
+		<button id="button_red_valve" class="" style="display:inline-block; visibility: visible; position: absolute; top: 5px; left:-55px; width:50px; height:20px; background-color:red" type="button">CLOSE</button>
+		<div id="color_block_red_valve_close_1" class="valve_visible" style="top: 0px; left: 0px; width:30px; height:5px; background-color:rgb(0 0 0)"></div>
+		<div id="color_block_red_valve_close_2" class="valve_visible" style="top: 25px; left: 0px; width:30px; height:5px; background-color:rgb(0 0 0)"></div>
+		<div id="color_block_red_valve_open_1" class="valve_hidden" style="top: 0px; left: 0px; width:5px; height:30px; background-color:rgb(0 0 0)"></div>
+		<div id="color_block_red_valve_open_2" class="valve_hidden" style="top: 0px; left: 25px; width:5px; height:30px; background-color:rgb(0 0 0)"></div>
+		<div id="color_block_red_valve_open_3" class="valve_hidden" style="top: 0px; left: 5px; width:20px; height:30px; background-color:rgb(255 0 0)"></div>
+	</div>
+	<div id="color_block_green" style="display:inline-block;  position: fixed; top: 200px; left: 710px; width:100px; height:300px; border:2px solid black; background-color:rgb(0 0 0)">
+		<div id="color_block_green_color" style="display:inline-block; position: absolute; top: 300px; left: 0px; width:100px; height:0px; background-color:rgb(0 255 0)"></div>
+	</div>
+	<div id="color_block_green_valve" style="display:inline-block; position: fixed; top: 510px; left: 745px; width:30px; height:30px; border:2px solid black; background-color:rgb(255 255 255)">
+		<button id="button_green_valve" style="display:inline-block; visibility: visible; position: absolute; top: 5px; left:-55px; width:50px;; height:20px; background-color:red" type="button">CLOSE</button>
+		<div id="color_block_green_valve_close_1" class="valve_visible" style="top: 0px; left: 0px; width:30px; height:5px; background-color:rgb(0 0 0)"></div>
+		<div id="color_block_green_valve_close_2" class="valve_visible" style="top: 25px; left: 0px; width:30px; height:5px; background-color:rgb(0 0 0)"></div>
+		<div id="color_block_green_valve_open_1" class="valve_hidden" style="top: 0px; left: 0px; width:5px; height:30px; background-color:rgb(0 0 0)"></div>
+		<div id="color_block_green_valve_open_2" class="valve_hidden" style="top: 0px; left: 25px; width:5px; height:30px; background-color:rgb(0 0 0)"></div>
+		<div id="color_block_green_valve_open_3" class="valve_hidden" style="top: 0px; left: 5px; width:20px; height:30px; background-color:rgb(0 255 0)"></div>
+	</div>
+	<div id="color_block_blue" style="display:inline-block;  position: fixed; top: 200px; left: 820px; width:100px; height:300px; border:2px solid black; background-color:rgb(0 0 0)">
+		<div id="color_block_blue_color" style="display:inline-block; position: absolute; top: 300px; left: 0px; width:100px; height:0px; background-color:rgb(0 0 255)"></div>
+	</div>
+	<div id="color_block_blue_valve" style="display:inline-block; position: fixed; top: 510px; left: 855px; width:30px; height:30px; border:2px solid black; background-color:rgb(255 255 255)">
+		<button id="button_blue_valve" style="display:inline-block; visibility: visible; position: absolute; top: 5px; left:-55px; width:50px;; height:20px; background-color:red" type="button">CLOSE</button>
+		<div id="color_block_blue_valve_close_1" class="valve_visible" style="top: 0px; left: 0px; width:30px; height:5px; background-color:rgb(0 0 0)"></div>
+		<div id="color_block_blue_valve_close_2" class="valve_visible" style="top: 25px; left: 0px; width:30px; height:5px; background-color:rgb(0 0 0)"></div>
+		<div id="color_block_blue_valve_open_1" class="valve_hidden" style="top: 0px; left: 0px; width:5px; height:30px; background-color:rgb(0 0 0)"></div>
+		<div id="color_block_blue_valve_open_2" class="valve_hidden" style="top: 0px; left: 25px; width:5px; height:30px; background-color:rgb(0 0 0)"></div>
+		<div id="color_block_blue_valve_open_3" class="valve_hidden" style="top: 0px; left: 5px; width:20px; height:30px; background-color:rgb(0 0 255)"></div>
+	</div>
+	<div id="color_block_mixer" style="display:inline-block;  position: fixed; top: 550px; left: 610px; width:300px; height:300px; border:2px solid black; background-color:rgb(0 0 0)">
+		<div id="color_block_mixer_color" style="display:inline-block; position: absolute; top: 300px; left: 0px; width:300px; height:0px; background-color:rgb(255 255 255)"></div>
+	</div>
 </body>
 </html>
