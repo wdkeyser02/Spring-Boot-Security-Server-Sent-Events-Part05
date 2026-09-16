@@ -19,18 +19,27 @@ public class ColorController {
 		executor.execute(() -> {
             try {
             	Thread.sleep(2000);
-                emitter.send(SseEmitter.event()
+            	for (int i = 0; i != 301; i++) {
+            		emitter.send(SseEmitter.event()
                 		.name("red")
-                		.data("" + 300)
+                		.data("" + i)
                 		.build());
-                emitter.send(SseEmitter.event()
+            		Thread.sleep(10);
+            	}
+            	for (int i = 0; i != 301; i++) {
+            		emitter.send(SseEmitter.event()
             			.name("green")
-            			.data("" + 300)
+            			.data("" + i)
             			.build());
-                emitter.send(SseEmitter.event()
+                	Thread.sleep(10);
+            	}
+                for (int i = 0; i != 301; i++) {
+                	emitter.send(SseEmitter.event()
             			.name("blue")
-            			.data("" + 300)
+            			.data("" + i)
             			.build());
+                	Thread.sleep(10);
+                }
                 Thread.sleep(1000);
 	            emitter.send(SseEmitter.event()
             			.name("valve_red")
@@ -105,7 +114,9 @@ public class ColorController {
             			.build());
             } catch (IOException | InterruptedException e) {
                 emitter.completeWithError(e);
-            }
+            } finally {
+				emitter.complete();
+			}
 		});  
 		return emitter;
 	}
