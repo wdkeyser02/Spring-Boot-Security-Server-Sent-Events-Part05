@@ -18,7 +18,7 @@ public class ColorController {
 		SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
 		executor.execute(() -> {
             try {
-            	Thread.sleep(2000);
+            	Thread.sleep(5000);
             	for (int i = 0; i != 301; i++) {
             		emitter.send(SseEmitter.event()
                 		.name("red")
